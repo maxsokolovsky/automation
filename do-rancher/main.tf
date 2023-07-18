@@ -28,10 +28,12 @@ resource "digitalocean_droplet" "dockernode" {
   provisioner "remote-exec" {
     inline = [
       <<EOT
-      docker run -d -p 80:80 -p 443:443 \
-        -e CATTLE_AGENT_IMAGE=rancher/rancher-agent:${var.rancher_agent_version} \
-        -e CATTLE_BOOTSTRAP_PASSWORD=${var.bootstrap_password} \
-        --privileged --name rancher rancher/rancher:${var.rancher_version} >/dev/null 2>&1
+      if "${var.install_rancher}" == true; then
+        docker run -d -p 80:80 -p 443:443 \
+          -e CATTLE_AGENT_IMAGE=rancher/rancher-agent:${var.rancher_agent_version} \
+          -e CATTLE_BOOTSTRAP_PASSWORD=${var.bootstrap_password} \
+          --privileged --name rancher rancher/rancher:${var.rancher_version} >/dev/null 2>&1
+      fi
       EOT
     ]
     connection {
@@ -50,12 +52,11 @@ resource "digitalocean_record" "dns" {
   value  = digitalocean_droplet.dockernode.ipv4_address
 }
 
-output "rancher_server_url" {
+output "dns_address" {
   depends_on = [
     digitalocean_record.dns,
   ]
-  description = "URL of the running Rancher server"
-  value       = "https://${digitalocean_record.dns.name}.${digitalocean_record.dns.domain}"
+  value = "https://${digitalocean_record.dns.name}.${digitalocean_record.dns.domain}"
 }
 
 output "droplet_ip" {
