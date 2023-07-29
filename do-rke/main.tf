@@ -32,16 +32,16 @@ resource "digitalocean_ssh_key" "cluster_pub_key" {
 }
 
 resource "digitalocean_droplet" "nodes" {
-  count    = 2
+  count    = 3
   image    = "ubuntu-20-04-x64"
-  name     = format("%s-%s", var.do_node_name_prefix, "w")
+  name     = "${var.do_node_name_prefix}-${count.index + 1}"
   region   = var.do_region
   size     = var.do_droplet_size
   ssh_keys = [digitalocean_ssh_key.cluster_pub_key.id]
   provisioner "remote-exec" {
     inline = [
       "sleep 30",
-      "curl https://releases.rancher.com/install-docker/23.0.sh | sh",
+      "curl -sL https://releases.rancher.com/install-docker/23.0.sh | sh > /dev/null 2>&1",
     ]
     connection {
       host  = self.ipv4_address
@@ -62,6 +62,12 @@ resource "rke_cluster" "do_rke" {
   }
   nodes {
     address = digitalocean_droplet.nodes[1].ipv4_address
+    user    = var.do_node_user
+    role    = ["worker"]
+    ssh_key = file(var.ssh_public_key_file)
+  }
+  nodes {
+    address = digitalocean_droplet.nodes[2].ipv4_address
     user    = var.do_node_user
     role    = ["worker"]
     ssh_key = file(var.ssh_public_key_file)

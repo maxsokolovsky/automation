@@ -5,7 +5,7 @@ variable "do_token" {
 
 variable "do_node_name_prefix" {
   type    = string
-  default = "max-node-"
+  default = "max-node"
 }
 
 variable "do_node_user" {
