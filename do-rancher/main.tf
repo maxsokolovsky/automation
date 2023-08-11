@@ -30,7 +30,7 @@ resource "digitalocean_droplet" "dockernode" {
       <<EOT
       if "${var.install_rancher}" == true; then
         docker run -d -p 80:80 -p 443:443 \
-          -e CATTLE_AGENT_IMAGE=rancher/rancher-agent:${var.rancher_agent_version} \
+          -e CATTLE_AGENT_IMAGE=rancher/rancher-agent:${var.rancher_version} \
           -e CATTLE_BOOTSTRAP_PASSWORD=${var.bootstrap_password} \
           --privileged --name rancher rancher/rancher:${var.rancher_version} >/dev/null 2>&1
       fi

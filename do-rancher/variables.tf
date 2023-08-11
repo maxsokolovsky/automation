@@ -23,11 +23,6 @@ variable "rancher_version" {
   default = "v2.7.5"
 }
 
-variable "rancher_agent_version" {
-  type    = string
-  default = "v2.7.5"
-}
-
 variable "do_node_user" {
   type    = string
   default = "root"
