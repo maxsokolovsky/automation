@@ -32,6 +32,7 @@ resource "digitalocean_droplet" "dockernode" {
         docker run -d -p 80:80 -p 443:443 \
           -e CATTLE_AGENT_IMAGE=rancher/rancher-agent:${var.rancher_version} \
           -e CATTLE_BOOTSTRAP_PASSWORD=${var.bootstrap_password} \
+          --restart=unless-stopped \
           --privileged --name rancher rancher/rancher:${var.rancher_version} >/dev/null 2>&1
       fi
       EOT
