@@ -9,4 +9,3 @@ if [ -z "$TF_VAR_do_token" ]; then
     export TF_VAR_do_token
     echo
 fi
-ssh-add id_rsa

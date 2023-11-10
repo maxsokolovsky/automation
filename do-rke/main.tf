@@ -19,7 +19,7 @@ provider "digitalocean" {
 }
 
 locals {
-  kubeconfig_file = "${path.root}/kubeconfig.yml"
+  kubeconfig_file = "${path.root}/kubeconfig.yaml"
 }
 
 output "kubeconfig_file" {
