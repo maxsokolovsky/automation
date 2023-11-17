@@ -31,6 +31,10 @@ resource "digitalocean_ssh_key" "cluster_pub_key" {
   public_key = file(var.ssh_public_key_file)
 }
 
+resource "digitalocean_tag" "owner" {
+  name = "owner:max"
+}
+
 resource "digitalocean_droplet" "nodes" {
   count    = 3
   image    = "ubuntu-20-04-x64"
@@ -38,6 +42,7 @@ resource "digitalocean_droplet" "nodes" {
   region   = var.do_region
   size     = var.do_droplet_size
   ssh_keys = [digitalocean_ssh_key.cluster_pub_key.id]
+  tags     = [digitalocean_tag.owner.id]
   provisioner "remote-exec" {
     inline = [
       "sleep 30",
