@@ -18,9 +18,24 @@ variable "do_node_name_prefix" {
   default = "max-node"
 }
 
-variable "rancher_version" {
+variable "rancher_image" {
   type    = string
-  default = "v2.7.5"
+  default = "rancher/rancher"
+}
+
+variable "rancher_tag" {
+  type    = string
+  default = "v2.7.9"
+}
+
+variable "rancher_agent_image" {
+  type    = string
+  default = "rancher/rancher-agent"
+}
+
+variable "rancher_agent_tag" {
+  type    = string
+  default = "v2.7.9"
 }
 
 variable "do_node_user" {

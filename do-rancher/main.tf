@@ -25,15 +25,16 @@ resource "digitalocean_droplet" "dockernode" {
   region   = var.do_region
   size     = var.do_droplet_size
   ssh_keys = [digitalocean_ssh_key.docker_pub_key.id]
+  tags     = [digitalocean_tag.owner.id]
   provisioner "remote-exec" {
     inline = [
       <<EOT
       if "${var.install_rancher}" == true; then
         docker run -d -p 80:80 -p 443:443 \
-          -e CATTLE_AGENT_IMAGE=rancher/rancher-agent:${var.rancher_version} \
+          -e CATTLE_AGENT_IMAGE=${var.rancher_agent_image}:${var.rancher_agent_tag} \
           -e CATTLE_BOOTSTRAP_PASSWORD=${var.bootstrap_password} \
           --restart=unless-stopped \
-          --privileged --name rancher rancher/rancher:${var.rancher_version} >/dev/null 2>&1
+          --privileged --name rancher ${var.rancher_image}:${var.rancher_tag} >/dev/null 2>&1
       fi
       EOT
     ]
@@ -51,6 +52,10 @@ resource "digitalocean_record" "dns" {
   domain = var.domain
   type   = "A"
   value  = digitalocean_droplet.dockernode.ipv4_address
+}
+
+resource "digitalocean_tag" "owner" {
+  name = "owner:max"
 }
 
 output "dns_address" {
