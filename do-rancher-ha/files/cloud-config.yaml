@@ -1,0 +1,49 @@
+#cloud-config
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64] http://download.docker.com/linux/ubuntu $RELEASE stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+ssh_pwauth: false
+disable_root: false
+users:
+  - default
+system_info:
+  default_user:
+    lock_passwd: true
+    groups:
+    - docker
+write_files:
+- path: "/etc/apt/preferences.d/docker"
+  owner: root:root
+  permissions: '0600'
+  content: |
+    Package: docker-*
+    Pin: version 5:${docker_version}*
+    Pin-Priority: 800
+- path: "/etc/sysctl.d/90-kubelet.conf"
+  owner: root:root
+  permissions: '0644'
+  content: |
+    vm.overcommit_memory=1
+    vm.panic_on_oom=0
+    kernel.panic=10
+    kernel.panic_on_oops=1
+    kernel.keys.root_maxbytes=25000000
+packages:
+- docker-ce
+- docker-ce-cli
+- containerd.io
+runcmd:
+- sysctl -p /etc/sysctl.d/90-kubelet.conf
+- groupadd --gid ${etcd_group_id} etcd
+- useradd --comment "etcd service account" --uid ${etcd_user_id} --gid ${etcd_group_id} etcd
+- usermod --comment "docker" -a -G docker root
+# hack to disable password reset 
+- sed -i -e 's/^root.*$/root:!*:16176::99999:7:::/g' /etc/shadow
+# do this at the end instead of in users block so we can wait on ssh to be available
+- echo -n "${init_ssh_public_key}" >> /root/.ssh/authorized_keys
+# allow kubernetes api inbound traffic to 6443
+- iptables -A INPUT -p tcp --dport 6443 -j ACCEPT
+# allow etcd inbound traffic to 2379
+- iptables -A INPUT -p tcp --dport 2379 -j ACCEPT

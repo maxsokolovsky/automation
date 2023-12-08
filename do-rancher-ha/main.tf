@@ -40,9 +40,10 @@ resource "local_file" "cloud_config_rendered" {
   filename        = "${path.module}/files/cloud-config-rendered.yaml"
   file_permission = "0600"
   content = templatefile("${path.module}/files/cloud-config.yaml", {
-    docker_version = "23.0"
-    etcd_group_id  = local.etcd_group_id
-    etcd_user_id   = local.etcd_user_id
+    init_ssh_public_key = trimspace(file(var.ssh_public_key_file))
+    docker_version      = "23.0"
+    etcd_group_id       = local.etcd_group_id
+    etcd_user_id        = local.etcd_user_id
   })
 }
 
