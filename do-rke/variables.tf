@@ -25,7 +25,7 @@ variable "do_droplet_size" {
 
 variable "rke_k8s_version" {
   type    = string
-  default = "v1.26.4-rancher2-1"
+  default = "v1.26.9-rancher1-1"
 }
 
 variable "ssh_public_key_file" {
