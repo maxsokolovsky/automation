@@ -60,6 +60,7 @@ resource "digitalocean_droplet" "control_plane" {
   size      = var.do_droplet_size
   user_data = local_file.cloud_config_rendered.content
   ssh_keys  = [digitalocean_ssh_key.cluster_pub_key.id]
+  tags      = [digitalocean_tag.owner.id]
 
   provisioner "remote-exec" {
     connection {
@@ -70,6 +71,10 @@ resource "digitalocean_droplet" "control_plane" {
     }
     inline = ["bash -c 'for i in range{1..10}; do systemctl is-active -q docker; if [ $? == 0 ]; then exit 0; fi; sleep 30; done; exit -1;'"]
   }
+}
+
+resource "digitalocean_tag" "owner" {
+  name = "owner:max"
 }
 
 resource "digitalocean_record" "dns" {
