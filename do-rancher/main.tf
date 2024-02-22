@@ -20,7 +20,7 @@ resource "digitalocean_ssh_key" "docker_pub_key" {
 }
 
 resource "digitalocean_droplet" "dockernode" {
-  image    = "132425012" # Docker 23.0.6 on Ubuntu 22.04.
+  image    = "150187231" # Docker 25.0.3 on Ubuntu 22.04.
   name     = format("%s", var.do_node_name_prefix)
   region   = var.do_region
   size     = var.do_droplet_size

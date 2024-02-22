@@ -25,7 +25,7 @@ variable "rancher_image" {
 
 variable "rancher_tag" {
   type    = string
-  default = "v2.7.9"
+  default = "v2.8.2"
 }
 
 variable "rancher_agent_image" {
@@ -35,7 +35,7 @@ variable "rancher_agent_image" {
 
 variable "rancher_agent_tag" {
   type    = string
-  default = "v2.7.9"
+  default = "v2.8.2"
 }
 
 variable "do_node_user" {

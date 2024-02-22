@@ -24,6 +24,7 @@ variable "do_node_name_prefix" {
 variable "do_node_user" {
   type        = string
   description = "the DigitalOcean node SSH user"
+  default     = "root"
 }
 
 variable "do_region" {
