@@ -33,7 +33,7 @@ locals {
   kubeconfig_file           = "${path.module}/files/kubeconfig.yml"
   kubelet_tls_cipher_suites = "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256"
   kubelet_feature_gates     = "RotateKubeletServerCertificate=true"
-  cert_manager_version      = "v1.12.2"
+  cert_manager_version      = "v1.14.3"
 }
 
 resource "local_file" "cloud_config_rendered" {
@@ -41,7 +41,7 @@ resource "local_file" "cloud_config_rendered" {
   file_permission = "0600"
   content = templatefile("${path.module}/files/cloud-config.yaml", {
     init_ssh_public_key = trimspace(file(var.ssh_public_key_file))
-    docker_version      = "23.0"
+    docker_version      = "24.0"
     etcd_group_id       = local.etcd_group_id
     etcd_user_id        = local.etcd_user_id
   })
@@ -54,7 +54,7 @@ resource "digitalocean_ssh_key" "cluster_pub_key" {
 
 resource "digitalocean_droplet" "control_plane" {
   count     = var.node_count
-  image     = "ubuntu-20-04-x64"
+  image     = "ubuntu-22-04-x64"
   name      = format("%s-%s-%s", var.do_node_name_prefix, "cp", count.index + 1)
   region    = var.do_region
   size      = var.do_droplet_size
