@@ -45,8 +45,8 @@ resource "digitalocean_droplet" "nodes" {
   tags     = [digitalocean_tag.owner.id]
   provisioner "remote-exec" {
     inline = [
-      "sleep 30",
-      "curl -sL https://releases.rancher.com/install-docker/23.0.sh | sh > /dev/null 2>&1",
+      "sleep 90",
+      "curl -sL https://releases.rancher.com/install-docker/23.0.sh | sh",
     ]
     connection {
       host  = self.ipv4_address
@@ -92,6 +92,13 @@ resource "rke_cluster" "do_rke" {
     drain                  = true
     max_unavailable_worker = "100%"
   }
+}
+
+resource "digitalocean_record" "dns" {
+  domain = "cp-dev.rancher.space"
+  type   = "A"
+  name   = "max-ha"
+  value  = digitalocean_droplet.nodes[0].ipv4_address
 }
 
 resource "local_sensitive_file" "kubeconfig_yaml" {
