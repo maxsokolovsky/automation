@@ -45,7 +45,7 @@ variable "do_node_user" {
 
 variable "do_region" {
   type    = string
-  default = "nyc1"
+  default = "nyc3"
 }
 
 variable "do_droplet_size" {

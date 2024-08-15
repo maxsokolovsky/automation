@@ -15,17 +15,17 @@ provider "digitalocean" {
 }
 
 resource "digitalocean_ssh_key" "docker_pub_key" {
-  name       = "max-docker-key"
+  name = "max-docker-key"
   public_key = file(var.ssh_public_key_file)
 }
 
 resource "digitalocean_droplet" "dockernode" {
-  image    = "158807664" # Docker on Ubuntu 22.04.
-  name     = format("%s", var.do_node_name_prefix)
-  region   = var.do_region
-  size     = var.do_droplet_size
+  image = "163081389" # Docker on Ubuntu 22.04.
+  name = format("%s", var.do_node_name_prefix)
+  region = var.do_region
+  size   = var.do_droplet_size
   ssh_keys = [digitalocean_ssh_key.docker_pub_key.id]
-  tags     = [digitalocean_tag.owner.id]
+  tags = [digitalocean_tag.owner.id]
   provisioner "remote-exec" {
     inline = [
       <<EOT
