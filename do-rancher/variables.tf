@@ -18,6 +18,10 @@ variable "do_node_name_prefix" {
   default = "max-node"
 }
 
+variable "docker_version" {
+  default = "26.0.2"
+}
+
 variable "rancher_image" {
   type    = string
   default = "rancher/rancher"

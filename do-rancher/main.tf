@@ -15,20 +15,23 @@ provider "digitalocean" {
 }
 
 resource "digitalocean_ssh_key" "docker_pub_key" {
-  name = "max-docker-key"
+  name       = "max-docker-key"
   public_key = file(var.ssh_public_key_file)
 }
 
 resource "digitalocean_droplet" "dockernode" {
-  image = "163081389" # Docker on Ubuntu 22.04.
-  name = format("%s", var.do_node_name_prefix)
-  region = var.do_region
-  size   = var.do_droplet_size
+  image    = "ubuntu-24-04-x64"
+  name     = format("%s", var.do_node_name_prefix)
+  region   = var.do_region
+  size     = var.do_droplet_size
   ssh_keys = [digitalocean_ssh_key.docker_pub_key.id]
-  tags = [digitalocean_tag.owner.id]
+  tags     = [digitalocean_tag.owner.id]
   provisioner "remote-exec" {
     inline = [
       <<EOT
+      sleep 30
+      curl https://releases.rancher.com/install-docker/${var.docker_version}.sh | sh
+      sudo usermod -aG docker root
       if "${var.install_rancher}" == true; then
         docker run -d -p 80:80 -p 443:443 \
           -e CATTLE_AGENT_IMAGE=${var.rancher_agent_image}:${var.rancher_agent_tag} \
